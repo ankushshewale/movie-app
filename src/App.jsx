@@ -40,13 +40,11 @@ function App() {
         throw new Error("Failed to fetch Movies");
       }
       const data = await response.json();
-
       if (data.response === "False") {
         setErrorMessage(data.error || "Failed to fetch movies");
         setMovieList([]);
         return;
       }
-      // console.log(data.results);
       setMovieList(data.results || []);
 
       if (query && data.results.length > 0) {
@@ -83,7 +81,7 @@ function App() {
       <div className="pattern" />
       <div className="wrapper">
         <header>
-          <img src="./hero.svg" alt="Hero Banner" />
+          <img src="./hero.png" alt="Hero Banner" />
           <h1>
             Find <span className="text-gradient">Movies</span> You'll Enjoy
             Without the Hassle
