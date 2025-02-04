@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import Search from "./components/Search";
 import Spinner from "./components/Spinner";
 import MovieCard from "./components/MovieCard";
 import { useDebounce } from "react-use";
 import { updateSearchCount, getTrendingMovies } from "./appwrite";
+import { createPortal } from "react-dom";
+import MovieDetails from "./components/MovieDetails";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -26,6 +28,8 @@ function App() {
 
   const [trendingMovies, setTrendingMovies] = useState([]);
 
+  const [selectedMovie, setSelectedMovie] = useState(null);
+
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 500, [searchTerm]);
 
   const fetchMovies = async (query = "") => {
@@ -45,6 +49,7 @@ function App() {
         setMovieList([]);
         return;
       }
+      console.log("Movie List :", data.results);
       setMovieList(data.results || []);
 
       if (query && data.results.length > 0) {
@@ -56,6 +61,29 @@ function App() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchMovieDetails = async (movieId) => {
+    // setIsLoading(true);
+
+    try {
+      const endpoint = `${API_BASE_URL}/movie/${movieId}`; // Append videos and credits for more details
+      const response = await fetch(endpoint, API_OPTIONS);
+      if (!response.ok) {
+        throw new Error("Failed to fetch movie details");
+      }
+      const data = await response.json();
+      console.log("Selected Movie Details: ", data.original_title, "\n", data);
+      setSelectedMovie(data);
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+      setErrorMessage("Error fetching movie details. Please try again.");
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+  const handleMovieClick = (movieId) => {
+    fetchMovieDetails(movieId);
   };
 
   const loadTrendingMovies = async () => {
@@ -93,7 +121,6 @@ function App() {
         {trendingMovies.length > 0 && (
           <section className="trending">
             <h2>Trending Movies</h2>
-
             <ul>
               {trendingMovies.map((movie, index) => (
                 <li key={movie.$id}>
@@ -114,11 +141,22 @@ function App() {
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <MovieCard key={movie.id} movie={movie} />
+                <div key={movie.id} onClick={() => handleMovieClick(movie.id)}>
+                  <MovieCard movie={movie} />
+                </div>
               ))}
             </ul>
           )}
         </section>
+
+        {selectedMovie &&
+          createPortal(
+            <MovieDetails
+              movie={selectedMovie}
+              onClose={() => setSelectedMovie(null)}
+            />,
+            document.body
+          )}
       </div>
     </main>
   );
