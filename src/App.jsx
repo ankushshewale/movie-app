@@ -114,8 +114,6 @@ function App() {
             Find <span className="text-gradient">Movies</span> You'll Enjoy
             Without the Hassle
           </h1>
-
-          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
 
         {trendingMovies.length > 0 && (
@@ -134,6 +132,9 @@ function App() {
 
         <section className="all-movies">
           <h2 className="mt-[40px]">All Movies</h2>
+
+          <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
           {isLoading ? (
             <Spinner />
           ) : errorMessage ? (

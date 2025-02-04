@@ -11,6 +11,7 @@ function MovieDetails({
     production_companies,
     revenue,
     runtime,
+    original_language,
     spoken_languages, //english_name
     vote_average,
     budget,
@@ -25,9 +26,19 @@ function MovieDetails({
       </button>
       <div className="modal">
         <div className="movieDetails">
-          <h2 className="movieTitle">
-            {title} <small className="releaseYear">({releaseYear})</small>
-          </h2>
+          <h2 className="movieTitle">{title}</h2>
+          <div className="content">
+            <div className="rating">
+              <img src="star.svg" alt="Star Icon" />
+              <p>{vote_average ? vote_average.toFixed(1) : "N/A"}</p>
+            </div>
+            <span>•</span>
+            <p className="lang">{original_language.toUpperCase()}</p>
+            <span>•</span>
+            <p className="year">
+              {release_date ? release_date.split("-")[0] : "N/A"}
+            </p>
+          </div>
           <h3 className="movieSubTitle">{tagline}</h3>
           <img
             className="backdropImage"
@@ -64,11 +75,6 @@ function MovieDetails({
               {revenue > 0 && (
                 <li>
                   <strong>Revenue: </strong> ${revenue}
-                </li>
-              )}
-              {vote_average > 0 && (
-                <li>
-                  <strong>Rating:</strong> {vote_average.toFixed(1)}/10
                 </li>
               )}
             </ul>
