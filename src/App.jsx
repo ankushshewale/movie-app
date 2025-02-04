@@ -6,6 +6,8 @@ import { useDebounce } from "react-use";
 import { updateSearchCount, getTrendingMovies } from "./appwrite";
 import { createPortal } from "react-dom";
 import MovieDetails from "./components/MovieDetails";
+import Header from "./components/Header";
+import TrendingMovies from "./components/TrendingMovies";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -64,10 +66,8 @@ function App() {
   };
 
   const fetchMovieDetails = async (movieId) => {
-    // setIsLoading(true);
-
     try {
-      const endpoint = `${API_BASE_URL}/movie/${movieId}`; // Append videos and credits for more details
+      const endpoint = `${API_BASE_URL}/movie/${movieId}`;
       const response = await fetch(endpoint, API_OPTIONS);
       if (!response.ok) {
         throw new Error("Failed to fetch movie details");
@@ -78,10 +78,9 @@ function App() {
     } catch (error) {
       console.error("Error fetching movie details:", error);
       setErrorMessage("Error fetching movie details. Please try again.");
-    } finally {
-      // setIsLoading(false);
     }
   };
+
   const handleMovieClick = (movieId) => {
     fetchMovieDetails(movieId);
   };
@@ -89,7 +88,6 @@ function App() {
   const loadTrendingMovies = async () => {
     try {
       const movies = await getTrendingMovies();
-
       setTrendingMovies(movies);
     } catch (error) {
       console.error(`Error fetching trending movies: ${error}`);
@@ -108,31 +106,12 @@ function App() {
     <main>
       <div className="pattern" />
       <div className="wrapper">
-        <header>
-          <img src="./hero.png" alt="Hero Banner" />
-          <h1>
-            Find <span className="text-gradient">Movies</span> You'll Enjoy
-            Without the Hassle
-          </h1>
-        </header>
+        <Header />
 
-        {trendingMovies.length > 0 && (
-          <section className="trending">
-            <h2>Trending Movies</h2>
-            <ul>
-              {trendingMovies.map((movie, index) => (
-                <li key={movie.$id}>
-                  <p>{index + 1}</p>
-                  <img src={movie.poster_url} alt={movie.title} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        <TrendingMovies trendingMovies={trendingMovies} />
 
         <section className="all-movies">
           <h2 className="mt-[40px]">All Movies</h2>
-
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
           {isLoading ? (
