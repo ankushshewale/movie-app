@@ -76,18 +76,18 @@
   }
 
   .trending {
-    @apply mt-20;
+    @apply pt-20;
 
     & ul {
-      @apply flex flex-row overflow-y-auto gap-5 -mt-10 w-full hide-scrollbar;
+      @apply flex flex-row overflow-y-hidden overflow-x-auto pt-8 gap-5 w-full hide-scrollbar;
     }
 
     & ul li {
-      @apply min-w-[230px] flex flex-row items-center;
+      @apply min-w-[230px] flex flex-row items-center relative justify-center;
     }
 
     & ul li p {
-      @apply fancy-text mt-[22px] text-nowrap;
+      @apply fancy-text mt-[22px] text-nowrap leading-20 absolute -z-10 -left-2.5;
     }
 
     & ul li img {
@@ -131,7 +131,7 @@
     }
 
     & .content {
-      @apply mt-2 flex flex-row items-center flex-wrap gap-2;
+      @apply mt-2 flex flex-row items-center flex-wrap gap-2 justify-center;
     }
 
     & .rating {
@@ -278,9 +278,8 @@
 }
 
 .movieInfo {
-  @apply sm:w-full md:w-[50%];
+  @apply flex sm:w-full md:w-[50%];
   margin: 0px auto;
-  display: flex;
   flex-direction: column;
 }
 
@@ -290,29 +289,22 @@
 
 .movieSubTitle {
   color: #737373;
-  margin-bottom: 10px;
-  @apply flex sm:justify-start md:justify-center;
+  @apply flex sm:justify-start md:justify-center mb-2.5;
 }
 
 .genreTag {
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  flex-wrap: wrap;
+  @apply flex items-center justify-items-start flex-wrap;
   gap: 5px;
   margin: 10px 0px;
 }
 
 .genreItem {
-  @apply justify-center;
+  @apply justify-center rounded text-sm;
   border-color: rgb(65, 65, 65);
-  border-radius: 0.25rem;
   padding: 0.1875rem 0.25rem;
   background: rgb(65, 65, 65);
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.875rem;
   font-weight: 500;
-  line-height: 1.5;
 }
 
 .movieParam li {

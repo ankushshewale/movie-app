@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
 function MovieDetails({
   movie: {
@@ -18,24 +18,58 @@ function MovieDetails({
   },
   onClose,
 }) {
-  const releaseYear = release_date.split("-")[0];
+  const closeButtonRef = useRef(null);
+
+  useEffect(() => {
+    if (closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+
+     // Handle Escape key to close modal
+     const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
   return (
     <div className="modal-overlay">
-      <button className="modal-close" title="Close" onClick={onClose}>
+      <button
+        className="modal-close"
+        title="Close"
+        onClick={onClose}
+        aria-label="Close movie details"
+        ref={closeButtonRef}
+      >
         X
       </button>
-      <div className="modal">
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="movie-title"
+      >
         <div className="movieDetails">
-          <h2 className="movieTitle">{title}</h2>
+          <h2 id="movie-title" className="movieTitle">
+            {title}
+          </h2>
           <div className="content">
             <div className="rating">
-              <img src="star.svg" alt="Star Icon" />
+              <img src="star.svg" alt="" aria-hidden="true" />
+              <span className="sr-only">Rating for {title}</span>
               <p>{vote_average ? vote_average.toFixed(1) : "N/A"}</p>
             </div>
-            <span>•</span>
+            <span aria-hidden="true">•</span>
+            <span className="sr-only">Language for {title} is</span>
             <p className="lang">{original_language.toUpperCase()}</p>
-            <span>•</span>
+            <span aria-hidden="true">•</span>
             <p className="year">
+              <span className="sr-only">Release date for {title}</span>
               {release_date ? release_date.split("-")[0] : "N/A"}
             </p>
           </div>
@@ -47,7 +81,8 @@ function MovieDetails({
                 ? `https://image.tmdb.org/t/p/w500/${backdrop_path}`
                 : `/no-movie.svg`
             }
-            alt={title}
+            alt=""
+            aria-hidden="true"
           />
           <div className="movieInfo">
             {genres && genres.length > 0 && (
@@ -64,7 +99,7 @@ function MovieDetails({
               {production_companies.length > 0 && (
                 <li>
                   <b>Production By :</b>{" "}
-                  {production_companies.map((company) => company.name + ", ")}
+                  {production_companies.map((c) => c.name).join(", ")}
                 </li>
               )}
               {budget > 0 && (

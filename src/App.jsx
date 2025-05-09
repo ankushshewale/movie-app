@@ -54,6 +54,11 @@ function App() {
       console.log("Movie List :", data.results);
       setMovieList(data.results || []);
 
+      if (query && data.results.length === 0) {
+        setErrorMessage("No Movies Found");
+        return;
+      }
+
       if (query && data.results.length > 0) {
         await updateSearchCount(query, data.results[0]);
       }
@@ -121,9 +126,12 @@ function App() {
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <div key={movie.id} onClick={() => handleMovieClick(movie.id)}>
-                  <MovieCard movie={movie} />
-                </div>
+                <li key={movie.id}>
+                  <MovieCard
+                    movie={movie}
+                    onClick={() => handleMovieClick(movie.id)}
+                  />
+                </li>
               ))}
             </ul>
           )}
